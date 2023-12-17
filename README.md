@@ -166,7 +166,9 @@ plt.legend()
 plt.show()
 ```
 Running a PCA, we can see that the PCA feature 4 represents 81% of the variance, which means we can reduce those 9 variables into 5 dimensions we can call `demographicPCA`.
+
 ![Untitled](images/Untitled%202.png)
+
 ```python
 pca_result = pca.transform(X_standardized[['white', 'hispanic', 'black', 'educ', 'faminc', 'unionmember', 'ageless18', 'age65plus', 'armedforces', 'foreignborn']])
 # select the PCA feature 5 and add it to X
@@ -176,7 +178,9 @@ for i in range(5):
 - **Ideology Features**: `nominate_dim1` `nominate_dim2` `op_ideo` `pid7` `ideo5`
 *(Same code as above but with different features)*
 Running a PCA, we can see that the PCA feature 0 represents 66% of the variance, while PCA feature 1 represents 18%, and so on (as shown in the graph below).
+
 ![Untitled](images/Untitled%203.png)
+
 Knowing that the data on `policy` has around 80% accuracy after using chat gpt to classify the scores, explaining the full variance may not be needed as the models might be trying to fit to noise/wrong data too closely. Furthermore, having only one feature already explains 66% of the variance, so we can reduce the ideology features to a PCA of dimension 1, which we can call `ideoPCA`. We can drop the other ideology columns
 ```python
 # select the PCA feature 0 and add it to X
@@ -226,9 +230,7 @@ Our chosen hyperparameters are as follows:
 
 - `learning_rate` : as the default is $0.1$, we can start with that and take smaller learning rates which take more time to boost but can result in better generalization:
     
-    $$
-    \text{learning rate} = [0.01, 0.05, 0.1]
-    $$
+    $$\text{learning rate} = [0.01, 0.05, 0.1] $$
     
 - `max_depth` : The max depth of the tree should be small enough so the model is interpretable when running a normal decision tree. Anything above a depth of 4 has 62 or more splits, which - for me - makes it very long and difficult to interpret.
 
@@ -239,8 +241,8 @@ $$
 - `n_estimators` : We can use a large amount of trees as runtime is not really a problem for this assignment, while using `early_stopping_rounds` in order to stop the program slightly quicker if there is no improvement
 
 $$
-\text{n estimators} = [1000] \\
-\text{early stopping rounds} = [100]
+\displaylines{\text{n estimators} = [1000]\\ 
+\text{early stopping rounds} = [100]}
 $$
 
 - A train test split will also be used to check our model’s Out of Sample MSE. The size of our test split can be relatively small as we have a lot of data, and overfitting to the test set is unlikely.
@@ -301,9 +303,9 @@ print("Best MSE:", -grid_search.best_score_)
 
 We get the following result:
 
-$\text{Best } R^2 \text{ Score: } 0.38290203521283595\\
+$$\displaylines{\text{Best } R^2 \text{ Score: } 0.38290203521283595\\
 \text{Best Hyperparameters: [learning rate: 0.1, max depth: 4, n estimators: 1000]} \\
-\text{Best MSE: }0.008047822276907663$  
+\text{Best MSE: }0.008047822276907663}$$ 
 
 **Observation:** running the XGBoost with `scoring` set to $R^2$ or $MSE$ results in the same answer. This means we do not have to choose which scoring to use.*
 
@@ -373,9 +375,9 @@ The first 6 variables that get dropped are: `posAffPer`, `Inc_dem`, `demHvote`, 
 
 Running a linear regression with the remaining variables and adding a constant variable (with a `kfold` of $15$  and a `test size` of $0.1$ as explained for the XGBoost), we get the following model. ****(Rounded to 3 decimal places for simplicity)****
 
-$\text{Out-of-Sample }R^2: 0.186\\
+$$\displaylines{\text{Out-of-Sample }R^2: 0.186\\
 \text{Mean Squared Error: }0.00965\\
-policy = 0.049 -0.017 \text{ affect} + 0.046 \text{ approval pres} + 0.005 \text{ democrat} -0.005 \text{ seniority} + 0.011 \text{ economic} -0.002 \text{ uncontested} -0.007 \text{ primarychall} + 0.012 \text{ demoPCA1} + 0.012 \text{ demoPCA2} + 0.003 \text{ demoPCA3} + 0.002 \text{ demoPCA4}$
+policy = 0.049 -0.017 \text{ affect} + 0.046 \text{ approval pres} + 0.005 \text{ democrat} -0.005 \text{ seniority} + 0.011 \text{ economic} -0.002 \text{ uncontested} -0.007 \text{ primarychall} + 0.012 \text{ demoPCA1} + 0.012 \text{ demoPCA2} + 0.003 \text{ demoPCA3} + 0.002 \text{ demoPCA4}}$$
 
 ```python
 X2.drop(['posAffPer', 'Inc_dem', 'demHvote', 'primaryvote', 'antiInstPer', 'ideoPCA', 'southEast'], axis=1, inplace=True)
